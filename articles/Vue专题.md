@@ -1,3 +1,5 @@
+[TOC]
+
 # Vue 基础
 
 ## 安装
@@ -17,7 +19,7 @@
 
 ## Vue实例
 
-### 创建实例
+**创建实例**
 
 ```javascript
 var vm = new Vue({
@@ -41,9 +43,7 @@ function (createElement) {
 }
 ```
 
-
-
-### 生命周期
+**生命周期**
 
 - new Vue()
 - 初始化事件&生命周期
@@ -61,7 +61,7 @@ function (createElement) {
 - 解除绑定、销毁子组件及事件监听器
 - destroyed
 
-### 指令
+**指令**
 
 （1）动态参数
 
@@ -73,7 +73,7 @@ function (createElement) {
 
 - .prevent
 
-### 计算属性
+**计算属性**
 
 （1）计算属性vs方法
 
@@ -85,19 +85,19 @@ function (createElement) {
 
 - 当需要在数据变化时执行异步或者开销较大的操作时，需要侦听器
 
-### 渲染
+**渲染**
 
 - 不要在v-for中使用计算属性
 - 数组索引更新，对象更新用 `Vue.set()`
 
-### 事件修饰符
+**事件修饰符**
 
 - passive： 不会阻止默认行为
 - once: 只会触发一次
 - self: 自身时触发
 - exact: 精确修饰符
 
-### 表单修饰符
+**表单修饰符**
 
 - lazy： 在change时更新
 - number： 数值类型
@@ -105,7 +105,7 @@ function (createElement) {
 
 ## 组件
 
-### 组件的复用
+**组件的复用**
 
 - data必须是一个函数，因此每个实例都是独立的拷贝对象
 
@@ -175,21 +175,19 @@ $listeners
 
 （5）sync修饰符，双向绑定。
 
-
-
-### 插槽
+**插槽**
 
 `v-slot` 指令自 Vue 2.6.0 起被引入，提供更好的支持 `slot` 和 `slot-scope` attribute 的 API 替代方案
 
-### 动态组件
+**动态组件**
 
 <keep-alive> 包裹，实现缓存
 
-### 异步组件
+**异步组件**
 
 require（）
 
-### 处理边界情况
+**处理边界情况**
 
 - $root 根实例
 - $parent 父组件
@@ -199,7 +197,7 @@ require（）
 
 ## 可复用性&组合
 
-### 混入
+**混入**
 
 ```javascript
 var mixin = {
@@ -233,7 +231,7 @@ new Vue({
 - 对象合并，键名冲突时，取组件对象的键值对
 - 自定义合并策略，`Vue.config.optionMergeStrategies`
 
-### 自定义指令
+**自定义指令**
 
 定义： 对普通DOM元素进行底层操作
 
@@ -248,9 +246,7 @@ Vue.directives('focus', {
 <input v-focus>
 ```
 
-
-
-### 渲染函数 & JSX
+**渲染函数 & JSX**
 
 ```javascript
 // 渲染函数
@@ -282,7 +278,7 @@ new Vue({
 })
 ```
 
-### 插件
+**插件**
 
 **定义**： 通常用来为Vue添加全局功能, 一般有下面几种方法：
 
@@ -312,11 +308,7 @@ MyPlugin.install = function (Vue, options) {
 }
 ```
 
-
-
-
-
-### 过滤器
+**过滤器**
 
 **定义：** 过滤器可以用在两个地方：**双花括号插值和 `v-bind` 表达式** 。过滤器应该被添加在 JavaScript 表达式的尾部。
 
@@ -342,7 +334,7 @@ new Vue({
 
 ## 工具
 
-### 单文件组件
+**单文件组件**
 
 优点：
 
@@ -351,11 +343,11 @@ new Vue({
 - 组件作用域的CSS
 - 配合现代化构建工具，提高生产力
 
-### 单元测试
+**单元测试**
 
 [Vue CLI](https://cli.vuejs.org/zh/) 拥有开箱即用的通过 [Jest](https://github.com/facebook/jest) 或 [Mocha](https://mochajs.org/) 进行单元测试的内置选项。我们还有官方的 [Vue Test Utils](https://vue-test-utils.vuejs.org/zh/) 提供更多详细的指引和自定义设置。
 
-### TypeScript
+**TypeScript**
 
 [Vue CLI](https://cli.vuejs.org/) 提供了内建的 TypeScript 工具支持。
 
@@ -454,7 +446,7 @@ methods: {
 
 ## API
 
-### 全局配置
+**全局配置**
 
 `Vue.config` 是一个对象，包含 Vue 的全局配置。可以在启动应用之前修改下列属性：
 
@@ -462,7 +454,7 @@ methods: {
 2. errorHandler, 错误追踪；
 3. productionTip, 阻止vue在启动时的生成提示；
 
-### 全局API
+**全局API**
 
 1. `Vue.extend(options)`
 
@@ -565,9 +557,7 @@ methods: {
     }
     ```
 
-
-
-### 选项/数据
+**选项/数据**
 
 1. data
 
@@ -593,7 +583,7 @@ methods: {
 
    
 
-### 选项/DOM
+**选项/DOM**
 
 1. el
 
@@ -611,7 +601,7 @@ methods: {
 
    字符串模板的代替方案，允许你发挥 JavaScript 最大的编程能力。该渲染函数接收一个 `createElement` 方法作为第一个参数用来创建 `VNode`
 
-### 选项/生命周期
+**选项/生命周期**
 
 1. created
 
@@ -633,13 +623,13 @@ methods: {
 
 5. xx
 
-### 选项/资源
+**选项/资源**
 
 1. directives
 2. filters
 3. components
 
-### 选项/组合
+**选项/组合**
 
 1. mixins
 
@@ -651,7 +641,7 @@ methods: {
 
 3. provide/inject
 
-### 选项/其它
+**选项/其它**
 
 1. name
 
@@ -661,7 +651,7 @@ methods: {
 
    允许一个自定义组件在使用 `v-model` 时定制 prop 和 event
 
-### 实例属性
+**实例属性**
 
 1. vm.$data
 
@@ -681,7 +671,7 @@ methods: {
 
 7. vm.$listeners
 
-### 实例方法/事件
+**实例方法/事件**
 
 - vm.$watch
 
@@ -691,7 +681,7 @@ methods: {
 
 - vm.$delete
 
-### 实例方法/生命周期
+**实例方法/生命周期**
 
 1. vm.$mount
 
@@ -703,7 +693,7 @@ methods: {
 
 3. vm.$nextTick()
 
-### 指令，特殊特性
+**指令，特殊特性**
 
 1. v-if
 
@@ -715,7 +705,7 @@ methods: {
 
    的特殊属性主要用在 Vue 的虚拟 DOM 算法，在新旧 nodes 对比时辨识 VNodes。如果不使用 key，Vue 会使用一种最大限度减少动态元素并且尽可能的尝试就地修改/复用相同类型元素的算法。而使用 key 时，它会基于 key 的变化重新排列元素顺序，并且会移除 key 不存在的元素。
 
-### 内置组件
+**内置组件**
 
 1. component
 
@@ -748,11 +738,7 @@ methods: {
 - 获取计算属性时，如果dirty为true，会重新计算；否则直接返回当前值；
 - 当计算属性依赖的响应式的变量更新时，会通知计算属性watcher，改变dirty为true；
 
-
-
 # Vue 周边
-
-## Webpack
 
 ## vue-loader
 
