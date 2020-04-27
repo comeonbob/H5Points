@@ -850,5 +850,40 @@ methods: {
    - 预渲染更简单，前端依然是完全静态的站点；
    - 预渲染插件： prerender-spa-plugin
 
-   
 
+
+# Vue3
+
+## 特点
+
+1. 增加了composition-api，为了解决组件逻辑复用复杂问题；
+
+   核心：把options API 换成 Composition API；灵感来源Reack Hook
+
+2. 
+
+
+
+
+# 经典面试题
+1. 为什么说Vue的响应式体系是精确到组件级别的更新？
+
+   ```vue
+   <template>
+     <div>
+     	{{ msg }}
+       <ChildComponent></ChildComponent>
+     </div>
+   </template>
+   ```
+
+   **现象**：更新this.msg，会触发当前组件的更新，视图会重新渲染；但是子组件不会重新渲染；
+
+   **原理**：每个组件只收集了当前数据的依赖，子组件的更新只会通过更新props和slot去实现；
+
+   - props更新：子组件初始化时，对props做了响应式监听；
+   - slot更新：v2.5 父组件会主动强制更新子组件； v2.6 子组件收集了slot的依赖；
+
+   详解：https://mp.weixin.qq.com/s/wX4bNk9buoSQD2dgT_YOjg
+
+2. xx
