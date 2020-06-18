@@ -742,7 +742,7 @@ methods: {
 
 5. slot
 
-# Vue源码
+# Vue源码--todo
 
 ##  数据变化侦听
 
@@ -852,7 +852,7 @@ methods: {
 
 
 
-# Vue3
+# Vue3--todo
 
 ## 特点
 
@@ -860,7 +860,11 @@ methods: {
 
    核心：把options API 换成 Composition API；灵感来源Reack Hook
 
-2. 
+2. Flow换成TS
+
+3. 响应式更快、Object.defineProperty 换成 proxy;
+
+4. 
 
 
 
