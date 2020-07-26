@@ -852,19 +852,39 @@ methods: {
 
 
 
-# Vue3--todo
+# Vue3
 
-## 特点
+## Beta总结
+1. 文档
+- RFC文档 （一手信息）
+- 第三方库开始适配Vue3
 
-1. 增加了composition-api，为了解决组件逻辑复用复杂问题；
+2. 亮点
+- 性能提升
+  - 重写Virtual Dom（更快）30%-200%
+  - 编译模块时优化（标记静态文本，对比时跳过静态节点，只关心动态清单）
+  - 静态节点提升（不会放到render函数中）
+  - 缓存函数（对比react hook中的包一层函数）
+  - SSR更快 （200%-300%）（字符串渲染
+  - 响应式更快、Object.defineProperty 换成 proxy;
 
-   核心：把options API 换成 Composition API；灵感来源Reack Hook
+- 支持Tree-shaking (剪枝无用API)
+  - 如v-model, transition功能，如input的type类型；
+  - 只有hello world时13.5kb，小于vue2 23kb；
 
-2. Flow换成TS
+- composition API
+  - vue2 的mixin， vue3建议用composition api
+  - 灵活度高
 
-3. 响应式更快、Object.defineProperty 换成 proxy;
+- 内置新功能
+  - Fragments (碎片， 模板可以任意)
+  - Teleport、Suspense(异步组件)
 
-4. 
+- TS支持
+  - 类型声明
+  - 静态检查
+  - 编程体验
+
 
 
 
