@@ -775,11 +775,170 @@ methods: {
 ## Vuex
 
 1. 功能：集中式状态管理，多用于多个组件依赖某个属性
+
 2. 特点： 响应式，可回溯
-3. 原理：
-   - vue.use(), vuex内实现了install方法；
-   - 混入beforeCreate勾子，initVuex(), 并且挂载到vm.$store;
-   - 添加state到响应式
+
+3. 核心概念
+
+   - State：单一状态树；
+   - Getters:  从 store中的state中派生出的一些状态，类似于计算属性；
+   - Mutations： mutation提交更改数据，使用store.commit方法更改state状态，必须是同步函数；
+   - Actions： Action提交的是mutation， Action可以包含异步操作， 类似于装饰器；
+   - Module： module是store分割的模块，每个模块都有自己的state、getter、mutations、actions；
+
+4. Vuex的使用
+
+   开始 --> 安装Vuex --> 实例化 Vuex.Store --> 注入store，挂在到Vue示例
+
+   ```js
+   import Vuex from 'vuex'
+   Vue.use(Vuex) // 安装Vuex
+   let store = new Vuex.Store({ // 实例化store
+     state,
+     getters,
+     mutataions,
+     actions,
+     plugins,
+     modules
+   })
+   
+   new Vue({  // 注入store，挂在vue实例
+     store,
+     render: h => h(app)
+   }).$amount('app')
+   
+   ```
+
+5. Vuex的设计思想
+
+   - 借鉴flux思想，将数据存放到全局的store；
+   - 再将store挂载到每个vue实例组件中；
+   - 利用Vue.js的细粒度数据响应机制来进行高效的状态更新。
+
+6. 原理
+
+   问题1： vuex的store是如何挂载注入到每个组件中的呢？
+
+   - 安装vuex；
+
+     ```js
+     import Vuex from 'vuex'
+     import store from './store/index'
+     import App from './App.vue'
+     
+     Vue.use(Vuex)  // vue的插件机制, 混入vuex的生命周期
+     
+     new Vue({  // 注入store，挂在vue实例
+       store,
+       render: h => h(App)
+     }).$mount('#app')
+     ```
+
+   - 利用Vue的插件机制，会调用vuex的install方法，装载vuex；
+
+     ```js
+     export function install () {
+     	applyMixin(Vue)
+     }
+     
+     function applyMixin(Vue) {
+       Vue.mixin({ beforeCreate: vuexInit })  // vue的混入机制
+     }
+     
+     // vuex初始化
+     function vuexInit () {
+       const options = this.$options
+       if (options.store) {
+       	this.$store = options.store  
+       } else {
+         this.$store = options.parent.$store
+       }
+     }
+     ```
+
+   问题2： Vuex的state和getters是如何做到在各个组件中响应式更新状态呢？
+
+   - state借助Vue的data是响应式；
+
+   - getters借助Vue的computed是响应式；
+
+     ```js
+     store._vm = new Vue({
+       data: {
+         $$state: state
+       },
+       computed: getters
+     })
+     ```
+
+7. 实现简易的vuex
+
+   ```js
+   let Vue;
+   class Store {
+       constructor(options = {}) {
+           this.vm = new Vue({
+               data: {
+                   state: options.state
+               }
+           })
+           let getters = options.getters;
+   
+           this.getters = {}
+           Object.keys(getters).forEach(getterName => {
+               Object.defineProperty(this.getters, getterName, {
+                   get: () => {
+                       return getters[getterName](this.state)
+                   }
+               })
+           })
+           let mutations = options.mutations || {}
+           this.mutations = {}
+           Object.keys(mutations).forEach(mutaitonName => {
+               this.mutations[mutaitonName] = payload => {
+                   mutations[mutaitonName](this.state, payload);
+               }
+           })
+           let actions = options.actions || {}
+           this.actions = {}
+           Object.keys(actions).forEach(actionName => {
+               this.actions[actionName] = payload => {
+                   actions[actionName](this, payload);
+               }
+           })
+       }
+       commit = (method, payload) => {
+           this.mutations[method](payload);
+       }
+       dispatch(method, payload) {
+           this.actions[method](payload)
+       }
+       get state() {
+           return this.vm.state
+       }
+   }
+   
+   const install = (_Vue) => {
+       Vue = _Vue;
+       Vue.mixin({
+           beforeCreate() {
+               if(this.$options && this.$options.store) {
+                   // 给根实例增加$store属性
+                   this.$store = this.$options.store
+               } else {
+                   // 有可能单独创建了一个实例没有父亲，那就无法获取到store属性
+                   this.$store = this.$parent && this.$parent.$store
+               }
+           }
+       })
+   }
+   export default {
+       install,
+       Store
+   }
+   ```
+
+   
 
 ## vue-router
 
@@ -799,35 +958,100 @@ methods: {
 3. 路由懒加载
 
    - 原理： Vue的异步组件+webpack的代码分割功能；
-   - 实现： `const Foo = () =>import('./Foo.vue')`;
+   - 实现： `const Foo = () => import('./Foo.vue')`;
 
 4. 路由实现原理
 
-   - hash模式： Hash模式通过锚点值的改变，根据不同的值，渲染指定DOM位置的不同数据。
-   - history模式： 利用 history.pushState API 来完成 URL 跳转而无须重新加载页面。
-   - abstract模式：使用一个不依赖于浏览器的浏览历史虚拟管理后端。
+   - 更新视图但不重新请求页面，主要分三种不同模式：
+     - hash模式： Hash模式通过锚点值的改变，根据不同的值，渲染指定DOM位置的不同数据。
+     - history模式： 利用 history.pushState API 来完成 URL 跳转而无须重新加载页面。
+     - abstract模式：使用一个不依赖于浏览器的浏览历史虚拟管理后端。
 
-5. 源码主要功能：
+5. 如何使用vue-router
 
-   - VueRouter原型上提供install方法，供Vue.use 使用；
-   - 监听路由变化；
-   - 实现`router-view` 和 `router-link`全局组件；
-   - 解析路由配置，根据规则找到匹配组件，然后在`router-view`中渲染；
-   - 实现路由变量是响应式`Vue.prototype.$route`
+   ```js
+   // 1.安装插件，全局注册router-view、router-link组件、全局注入$router，$route对象
+   import Vue from 'vue'
+   import VueRouter from 'vue-router'
+   import App from './App.vue'
+   
+   Vue.use(VueRouter)
+   
+   // 2.创建VueRouter实例， router
+   const router = new VueRouter({
+     mode: 'history',
+     routes: [
+       { path: '/', component: Home },
+       { path: '/foo', component: Foo }
+     ]
+   })
+   
+   // 3.创建Vue实例，注入router， 解析路由配置，根据规则找到匹配组件，然后在`router-view`中渲染
+   
+   new Vue({
+     router,
+     render: h => h(App)
+   }).$mount('#app')
+   ```
 
-   ```javascript
-   VueRouter.install = function (_vue) {
-   	Vue = _vue;
-       Vue.mixin({
-           beforeCreate() {
-   			if (this.$options.router) {
-                   Vue.prototype.$route = this.$options.router;
-                   this.$options.router.init();
-               }
-           }
-       })
+   
+
+6. 源码主要功能：
+
+   (1) vueRouter 如何在vue中使用
+
+   答： 通过插件形式，即VueRouter原型上提供install方法；
+
+   ```js
+   // 安装函数
+   export function install (Vue) {
+     // 注入$router、$route
+     Object.defineProperty(Vue.prototype, '$router', {
+       get () { return this.$root._router }
+     })
+     Object.defineProperty(Vue.prototype, '$route', {
+   		get () { return this.$root._route }
+     })
+     
+     // 混入生命周期函数
+     Vue.mixin({
+       beforeCreate () {
+         // 赋值router
+   			this._router = this.$options.router
+         // 初始化
+         this._router.init(this)
+         // 定义响应式_route对象
+         Vue.util.defineReactive(this, '_route', this._router.hisotry.current)
+       }
+     })
+     
+     // 注册组件
+     Vue.component('router-view', View)
+     Vue.component('router-link', Link)
    }
    ```
+
+   
+
+   (2) 如何监听路由变化的
+
+   答： vueRouter初始化时, 路由监听处理. route属性是响应式的，只要有变化，会触发render重新渲染
+
+   ```js
+   function init(app) {
+   	const history = this.history
+   
+     history.listen(route => {
+       this.app._route = route
+     })
+   }
+   
+   ```
+
+   (3) 路由变化是如何更新到视图的
+
+   答：$router.push() --> history.push() --> history.transitionTo() --> history.updateRoute() --> app._route = route --> vm.render()
+
 ## SSR
 
 1. 什么是SSR
